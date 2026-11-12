@@ -1,0 +1,14 @@
+mujoco==3.2.2
+mujoco-python-viewer
+ray==2.40.0
+intel-openmp
+transforms3d
+scipy
+tensorboard
+dm_control
+hydra-core 
+omegaconf
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch==2.7.1
+torchvision==0.22.1
+torchaudio==2.7.1

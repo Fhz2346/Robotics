@@ -1,0 +1,76 @@
+env:
+  robot:
+    name: jvrc
+  dt:
+    ctrl: 0.025
+    sim: 0.001
+  len_obs_history: 1
+  action_smoothing: 0.5
+  kp: [200, 200, 200, 250, 80, 80, 
+       200, 200, 200, 250, 80, 80]
+  kd: [20, 20, 20, 25, 8, 8, 
+       20, 20, 20, 25, 8, 8]
+
+  sim:
+    pdrand_k: 0 # 扰动强度, randomize_PD_gains
+    bemf: False # back-EMF
+    motor_dyn: False # motor dynamics
+
+  task:
+    name: walk
+    goal_height_ref: 0.80
+    duration:
+      swing: 0.75
+      stance: 0.35
+
+info:
+  dS: 32
+  dA: 12
+
+ppo:
+  max_traj_len: 400 # batch size / n_proc
+  network:
+    actor:
+      type: Gaussian_FF_Actor
+      layers: [256, 256]
+      std_dev: 0.223
+      learn_std: False
+      bounded: False
+      normc_init: True
+
+    critic:
+      type: FF_V
+      layers: [256, 256]
+      normc_init: True
+
+  gamma: 0.99
+  sample:
+    deterministic: False
+    batch_size: 400
+    n_proc: 1
+    max_traj_len: # batch size / n_proc
+
+  train:
+    n_itr: 20000
+    lr: 1e-4
+    eps: 1e-5
+    epochs: 3
+
+    sampler:
+      minibatch_size: 64
+
+    update_ac:
+      max_grad_norm: 0.05
+      clip: 0.2
+      coeff:
+        entropy: 0
+
+    eval_freq: 100
+
+  yaml: None
+  continued: None
+  recurrent: False
+  input_norm_steps: 100000
+
+  use_gae: True
+  n_proc: 1

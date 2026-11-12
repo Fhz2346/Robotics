@@ -1,0 +1,20 @@
+name: jvrc_leg
+
+# actuators
+leg_joints: ["R_HIP_P", "R_HIP_R", "R_HIP_Y", "R_KNEE", "R_ANKLE_R", "R_ANKLE_P", 
+             "L_HIP_P", "L_HIP_R", "L_HIP_Y", "L_KNEE", "L_ANKLE_R", "L_ANKLE_P"]
+foot_names: ["L_ANKLE_P_S", "R_ANKLE_P_S"]
+
+ctrl:
+  type: pd
+  kp: [200, 200, 200, 250, 80, 80, 
+       200, 200, 200, 250, 80, 80]
+  kd: [20, 20, 20, 25, 8, 8, 
+       20, 20, 20, 25, 8, 8]
+
+nominal_pose:
+  base:
+    pos: [0, 0, 0.81]
+    quat: [1, 0, 0, 0]
+  angles: [-30, 0, 0, 50, 0, -24, 
+           -30, 0, 0, 50, 0, -24] # half sitting

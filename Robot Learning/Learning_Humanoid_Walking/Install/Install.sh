@@ -1,0 +1,1 @@
+conda create -n LHW python=3.10

@@ -1,0 +1,24 @@
+name: jvrc
+
+joints:
+  head: ["NECK_Y", "NECK_R", "NECK_P"]
+  arm: ["R_SHOULDER_P", "R_SHOULDER_R", "R_SHOULDER_Y", "R_ELBOW_P", "R_ELBOW_Y", "R_WRIST_R", "R_WRIST_Y",
+        "L_SHOULDER_P", "L_SHOULDER_R", "L_SHOULDER_Y", "L_ELBOW_P", "L_ELBOW_Y", "L_WRIST_R", "L_WRIST_Y"]
+  hand: ["R_UTHUMB", "R_LTHUMB", "R_UINDEX", "R_LINDEX", "R_ULITTLE", "R_LLITTLE", 
+         "L_UTHUMB", "L_LTHUMB", "L_UINDEX", "L_LINDEX", "L_ULITTLE", "L_LLITTLE"]
+  waist: ["WAIST_Y", "WAIST_P", "WAIST_R"]
+  leg: ["R_HIP_P", "R_HIP_R", "R_HIP_Y", "R_KNEE", "R_ANKLE_R", "R_ANKLE_P", 
+        "L_HIP_P", "L_HIP_R", "L_HIP_Y", "L_KNEE", "L_ANKLE_R", "L_ANKLE_P"]
+  
+bodies:
+  foot:
+    name: ["L_ANKLE_P_S", "R_ANKLE_P_S"]
+    collision:
+      type: box
+      size: [0.1, 0.05, 0.01]
+      pos: [0.029, 0, -0.09778]
+  arm:
+    name: ["R_SHOULDER_P_S", "R_SHOULDER_R_S", "R_ELBOW_P_S",
+           "L_SHOULDER_P_S", "L_SHOULDER_R_S", "L_ELBOW_P_S"]
+    euler: [[0, -0.052, 0], [-0.17, 0, 0], [0, -0.524, 0],
+            [0, -0.052, 0], [+0.17, 0, 0], [0, -0.524, 0]]
