@@ -1,0 +1,7 @@
+pos_tol: 0.008  # m
+vel_tol: 0.035  # m/s
+settle_steps: 40
+max_segment_time: 5.0
+max_total_time: 25.0
+eps: 1.0e-5
+frame_every: 4

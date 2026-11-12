@@ -1,0 +1,9 @@
+ECE276C Assignment 2 - Task 2 RRT* summary
+Waypoints: 7
+Segments planned: 6
+Segment 1: nodes=4, joint-space path length=7.734913 rad
+Segment 2: nodes=6, joint-space path length=5.575941 rad
+Segment 3: nodes=4, joint-space path length=4.745794 rad
+Segment 4: nodes=2, joint-space path length=2.680612 rad
+Segment 5: nodes=2, joint-space path length=0.742058 rad
+Segment 6: nodes=2, joint-space path length=0.711923 rad

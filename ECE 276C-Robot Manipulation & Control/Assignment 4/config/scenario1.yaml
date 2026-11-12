@@ -1,0 +1,17 @@
+defaults:
+  - camera@camera
+  - object@object
+  # - controller/camera@controller
+  - _self_
+
+camera:
+  init_pose:
+    pos: [0.2, 0, 1]
+    orn: [[1, 0, 0], [0, -1, 0], [0, 0, -1]]
+
+controller:
+  K_p_x: 0.1
+  K_p_Omega: 0.02
+
+object:
+  is_moving: false

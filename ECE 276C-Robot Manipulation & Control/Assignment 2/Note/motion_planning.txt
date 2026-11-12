@@ -1,0 +1,3 @@
+motion planning of robot arm is path planning in configuration space.
+two ee points in cartesian space -inverse kinematics-> two q in configuration space
+configuration space may not be a standard cartesian space(angle space).

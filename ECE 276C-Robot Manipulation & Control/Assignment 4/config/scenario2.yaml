@@ -1,0 +1,38 @@
+defaults:
+  - camera@robot.camera
+  - object@object
+  # - controller@controller
+  - _self_
+
+robot:
+  name: franka_panda
+  init_q: [0, -0.7853981634, 0.7853981634, -0.7853981634, 0.7853981634, 0.7853981634, 0.7853981634, 0, 0, 0, 0, 0]
+  camera:
+    where: ee
+    moving: true
+
+controller:
+  dq_limit: 0.05
+  camera:
+    K_p_x: 0.1
+    K_p_Omega: 0.02
+
+camera:
+  where: workspace
+  moving: false
+  init_pose:
+    pos: [0.6, 1.0, 0.7]
+    orn:
+      [[-0.73593101, 0.37958646, -0.56064219],
+       [0.67705653, 0.41259398, -0.60939369],
+       [0.0, -0.82805817, -0.56064219]]
+  image:
+    width: 512
+    height: 512
+  fov: 120
+  clipping_plane:
+    near: 0.05
+    far: 5.0
+
+object:
+  is_moving: true # true, false

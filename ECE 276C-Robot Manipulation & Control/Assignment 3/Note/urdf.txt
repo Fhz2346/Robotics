@@ -1,0 +1,4 @@
+URDF 中每个 link 和 joint 都可以理解为有自己的坐标系
+child link 坐标系在零位时与它的 parent joint 坐标系重合,
+当关节运动后, child link 相对于零位关节坐标系发生旋转或平移.
+一个 link 可能同时关联多个坐标系: inertial, visual. 都是相对于 link 坐标系的

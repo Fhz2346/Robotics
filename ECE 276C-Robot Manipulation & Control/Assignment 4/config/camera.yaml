@@ -1,0 +1,7 @@
+image:
+  width: 512
+  height: 512
+fov: 120
+clipping_plane:
+  near: 0.02 
+  far: 100

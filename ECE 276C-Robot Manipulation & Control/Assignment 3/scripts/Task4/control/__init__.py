@@ -1,0 +1,2 @@
+from .analytical import get_gravity_torque as get_gravity_torque_analytical
+from .fd import get_gravity_torque as get_gravity_torque_fd
