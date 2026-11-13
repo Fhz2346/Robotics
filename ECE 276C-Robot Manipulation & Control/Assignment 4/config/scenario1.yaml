@@ -12,6 +12,9 @@ camera:
 controller:
   K_p_x: 0.1
   K_p_Omega: 0.02
+  is_enabled:
+    translation:
+    rotation:
 
 object:
   is_moving: false

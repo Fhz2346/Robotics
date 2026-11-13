@@ -16,6 +16,12 @@ controller:
   camera:
     K_p_x: 0.1
     K_p_Omega: 0.02
+    is_enabled:
+      translation: true
+      rotation: true
+
+object:
+  is_moving: false # false, false
 
 camera:
   where: workspace
@@ -34,5 +40,4 @@ camera:
     near: 0.05
     far: 5.0
 
-object:
-  is_moving: true # true, false
+

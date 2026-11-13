@@ -16,6 +16,10 @@ class CameraController:
         self.K_p_x = cfg.K_p_x
         self.K_p_Omega = cfg.K_p_Omega
         self.K_p = np.diag([self.K_p_x] * 3 + [self.K_p_Omega] * 3)
+        self.is_translation = bool(cfg.is_enabled.translation)
+        self.is_rotation = bool(cfg.is_enabled.rotation)
+        if not self.is_translation and not self.is_rotation:
+            raise ValueError("At least one of translation or rotation must be enabled")
 
     def set_objective(self, tgt_pos, tgt_uv):
         self.tgt_pos = tgt_pos
@@ -40,6 +44,10 @@ class CameraController:
         depth = self.camera.depth[uv[1], uv[0]]
         error = self.tgt_uv - np.asarray(uv, dtype=float).reshape(2)
         L = self.getImageJacobian(uv, depth)
+        if not self.is_translation:
+            L[:, :3] = 0.0
+        if not self.is_rotation:
+            L[:, 3:] = 0.0
         twist_cam = self.K_p @ pinv(L) @ error
         delta_X = self.camera.orn @ twist_cam[:3]
         delta_Omega = self.camera.orn @ twist_cam[3:]

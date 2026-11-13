@@ -42,6 +42,7 @@ class Camera:
             renderer=p.ER_TINY_RENDERER,
         )
         self.rgb = np.asarray(rgb, dtype=np.uint8).reshape(self.H, self.W, -1)[:, :, :3]
+        # depth 得到的是到表面的距离, 并非到物体中心的距离
         depth = np.asarray(depth, dtype=np.float32).reshape(self.H, self.W)
         self.depth = self.depth_buffer_linearize(depth)
 
