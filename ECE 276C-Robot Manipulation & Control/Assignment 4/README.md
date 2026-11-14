@@ -58,8 +58,8 @@ The scripts import modules from `src`, so add that directory to `PYTHONPATH` bef
 $env:PYTHONPATH = "$PWD\src"
 python scripts/scenario1/Q1.py
 python scripts/scenario1/Q2.py
-python scripts/scenario2.py
-python scripts/scenario2_.py
+python scripts/scenario2/tracking.py
+python scripts/scenario2/0_roll.py
 ```
 
 ### macOS / Linux
@@ -67,14 +67,14 @@ python scripts/scenario2_.py
 ```bash
 PYTHONPATH=src python scripts/scenario1/Q1.py
 PYTHONPATH=src python scripts/scenario1/Q2.py
-PYTHONPATH=src python scripts/scenario2.py
-PYTHONPATH=src python scripts/scenario2_.py
+PYTHONPATH=src python scripts/scenario2/tracking.py
+PYTHONPATH=src python scripts/scenario2/0_roll.py
 ```
 
 Hydra command-line overrides can change configuration values. For example, run scenario 2 with a moving target:
 
 ```bash
-PYTHONPATH=src python scripts/scenario2.py object.is_moving=true
+PYTHONPATH=src python scripts/scenario2/tracking.py object.is_moving=true
 ```
 
 In PowerShell, use the same Python command after setting `$env:PYTHONPATH` as shown above.
@@ -87,7 +87,7 @@ In PowerShell, use the same Python command after setting `$env:PYTHONPATH` as sh
 
 ### Scenario 2: Eye-in-hand robot camera
 
-`scripts/scenario2.py` runs the Franka Panda eye-in-hand visual servoing scene. `scripts/scenario2_.py` runs null-space roll control and writes an annotated GIF to `output/scenario2/new.gif`. The demo also includes static, moving, and zero-roll results from `output/scenario2/static.gif`, `output/scenario2/moving.gif`, and `output/scenario2/0roll.gif`.
+`CameraController.control()` returns the desired camera twist in camera coordinates; `RobotController` converts it to world coordinates before solving with the robot Jacobian. `scripts/scenario2/tracking.py` runs this image-tracking controller and saves `output/scenario2/new.gif`. `scripts/scenario2/0_roll.py` uses `RobotNullController` to add a ground-relative camera-roll objective in the image-tracking null space and saves its annotated result to `output/scenario2/0roll.gif`. Static- and moving-target examples are also shown above.
 
 ## Project layout
 
@@ -95,8 +95,8 @@ In PowerShell, use the same Python command after setting `$env:PYTHONPATH` as sh
 config/                 Hydra configuration files
 scripts/scenario1/Q1.py Image Jacobian verification animation
 scripts/scenario1/Q2.py Camera translation/rotation control animations
-scripts/scenario2.py    Eye-in-hand robot simulation
-scripts/scenario2_.py   Eye-in-hand robot with null-space roll control
+scripts/scenario2/tracking.py Standard eye-in-hand image tracking
+scripts/scenario2/0_roll.py   Eye-in-hand tracking with null-space roll control
 scripts/init.py         PyBullet scene initialization
 src/Camera.py           Camera model and image projection helpers
 src/Object.py           Target object and motion trajectory
