@@ -15,13 +15,17 @@ class RobotController:
         self.camera_controller.set_objective(tgt_pos, tgt_uv)
 
     def control(self):
-        dx, domega = self.camera_controller.control()
-        desired_twist = np.r_[dx, domega]
+        c_twist = self.camera_controller.control()
+        camera_to_world = np.zeros((6, 6), dtype=float)
+        camera_to_world[:3, :3] = self.robot.camera.orn
+        camera_to_world[3:, 3:] = self.robot.camera.orn
+        w_twist = camera_to_world @ c_twist
         J = self.robot.get_jacobian()
-        dq = pinv(J, damping=1e-3) @ desired_twist
+        dq = pinv(J, damping=1e-3) @ w_twist
         # Bound per-frame joint motion to prevent oscillation near singularities.
         dq = np.clip(dq, -self.dq_limit, self.dq_limit)
         return dq
+
 
 class RobotNullController:
     """Image-based tracking with a camera-leveling secondary task."""
@@ -35,37 +39,39 @@ class RobotNullController:
     def set_objective(self, tgt_pos, tgt_uv):
         self.camera_controller.set_objective(tgt_pos, tgt_uv)
 
+    def camera_control(self):
+        uv = self.robot.camera.world2pixel(self.camera_controller.tgt_pos)
+        depth = self.robot.camera.depth[uv[1], uv[0]]
+        L = self.camera_controller.getImageJacobian(uv, depth)
+        if not self.camera_controller.is_translation:
+            L[:, :3] = 0.0
+        if not self.camera_controller.is_rotation:
+            L[:, 3:] = 0.0
+        error = self.camera_controller.tgt_uv - np.asarray(uv, dtype=float).reshape(2)
+        c_twist = self.camera_controller.K_p @ pinv(L) @ error
+        return L, c_twist
+
     def control(self):
-        dx, domega = self.camera_controller.control()
-        desired_twist = np.r_[dx, domega]
+        camera_to_world = np.zeros((6, 6), dtype=float)
+        camera_to_world[:3, :3] = self.robot.camera.orn
+        camera_to_world[3:, 3:] = self.robot.camera.orn
+        world_to_camera = np.zeros((6, 6), dtype=float)
+        world_to_camera[:3, :3] = self.robot.camera.orn.T
+        world_to_camera[3:, 3:] = self.robot.camera.orn.T
+        
+        L, c_twist = self.camera_control()
+        desired_twist = camera_to_world @ c_twist
         J_robot = self.robot.get_jacobian()
         dq_primary = pinv(J_robot, damping=1e-3) @ desired_twist
-
-        camera = self.robot.camera
-        uv = camera.world2pixel(self.camera_controller.tgt_pos)
-        depth = camera.depth[uv[1], uv[0]]
-        L_image = self.camera_controller.getImageJacobian(uv, depth)
-        if not self.camera_controller.is_translation:
-            L_image[:, :3] = 0.0
-        if not self.camera_controller.is_rotation:
-            L_image[:, 3:] = 0.0
-
-        # J_robot is expressed in world coordinates; the image Jacobian expects
-        # camera-frame twist, so rotate both linear and angular rows into camera.
-        R_cw = camera.orn.T
-        world_to_camera = np.zeros((6, 6), dtype=float)
-        world_to_camera[:3, :3] = R_cw
-        world_to_camera[3:, 3:] = R_cw
-        J_image_joint = L_image @ world_to_camera @ J_robot
-
+        J_image = L @ world_to_camera @ J_robot
         # Minimize half the squared roll angle while preserving image motion.
-        image_pinv = np.linalg.pinv(J_image_joint, rcond=1e-5)
-        nullspace = np.eye(J_robot.shape[1]) - image_pinv @ J_image_joint
-        roll = self._camera_roll(camera.orn)
-        roll_gradient = self._roll_gradient(camera.orn, J_robot[3:, :])
+        image_pinv = np.linalg.pinv(J_image, rcond=1e-5)
+        n_joints = J_robot.shape[1]
+        nullspace = np.eye(n_joints) - image_pinv @ J_image
+        roll = self._camera_roll(self.robot.camera.orn)
+        roll_gradient = self._roll_gradient(self.robot.camera.orn, J_robot[3:, :])
         dq_secondary = -self.roll_gain * nullspace @ (roll * roll_gradient)
         dq = dq_primary + dq_secondary
-
         # Bound per-frame joint motion to prevent oscillation near singularities.
         return np.clip(dq, -self.dq_limit, self.dq_limit)
 

@@ -48,7 +48,5 @@ class CameraController:
             L[:, :3] = 0.0
         if not self.is_rotation:
             L[:, 3:] = 0.0
-        twist_cam = self.K_p @ pinv(L) @ error
-        delta_X = self.camera.orn @ twist_cam[:3]
-        delta_Omega = self.camera.orn @ twist_cam[3:]
-        return delta_X, delta_Omega
+        twist = self.K_p @ pinv(L) @ error
+        return twist
